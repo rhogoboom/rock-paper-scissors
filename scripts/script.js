@@ -79,12 +79,47 @@ function capitalizeFirstLetter(str) {
 }
 
 function playRound(playerSelection, computerSelection) {
-    const cleanedChoice = cleanChoice(playerSelection);
-    if (isValidChoice(cleanedChoice)) {
-        let winScenario = decideWinScenario(cleanedChoice, computerSelection);
-        let outputString = makeOutputString(winScenario, cleanedChoice, computerSelection);
-        return outputString;
+    
+    let winScenario = decideWinScenario(playerSelection, computerSelection);
+    let outputString = makeOutputString(winScenario, playerSelection, computerSelection);
+    console.log(outputString);
+    return winScenario;
 
-    }
 
 }
+
+function game(nRounds=5) {
+    let playerWins = 0;
+    let computerWins = 0;
+
+
+    for (let i = 0; i < nRounds; i++) {
+        let roundResult = playRound(getPlayerChoice(), getComputerChoice());
+        if (roundResult === 0) {
+            computerWins++;
+        } else if (roundResult === 1) {
+            playerWins++;
+        }
+    }
+
+    if (playerWins > computerWins) {
+        return `You won the games: ${playerWins} to ${computerWins}`;
+    } else if (computerWins > playerWins) {
+        return 'You lost the games: ${playerWins} to ${computerWins}`';
+    } else {
+        return 'the games ended in a tie'
+    }
+
+};
+
+function getPlayerChoice() {
+    let validChoice = false;
+    let cleanedChoice;
+    while (!validChoice) {
+        const currentChoice = prompt("Rock, paper or scissors?");
+        cleanedChoice = cleanChoice(currentChoice);
+        validChoice = isValidChoice(cleanedChoice);
+    }
+    
+    return cleanedChoice;
+};
