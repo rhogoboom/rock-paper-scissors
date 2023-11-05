@@ -78,39 +78,31 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function playRound(playerSelection, computerSelection) {
-    
-    let winScenario = decideWinScenario(playerSelection, computerSelection);
-    let outputString = makeOutputString(winScenario, playerSelection, computerSelection);
-    console.log(outputString);
-    return winScenario;
 
 
-}
-
-function game(nRounds=5) {
-    let playerWins = 0;
-    let computerWins = 0;
+// function game(nRounds=5) {
+//     let playerWins = 0;
+//     let computerWins = 0;
 
 
-    for (let i = 0; i < nRounds; i++) {
-        let roundResult = playRound(getPlayerChoice(), getComputerChoice());
-        if (roundResult === 0) {
-            computerWins++;
-        } else if (roundResult === 1) {
-            playerWins++;
-        }
-    }
+//     for (let i = 0; i < nRounds; i++) {
+//         let roundResult = playRound(getPlayerChoice(), getComputerChoice());
+//         if (roundResult === 0) {
+//             computerWins++;
+//         } else if (roundResult === 1) {
+//             playerWins++;
+//         }
+//     }
 
-    if (playerWins > computerWins) {
-        return `You won the games: ${playerWins} to ${computerWins}`;
-    } else if (computerWins > playerWins) {
-        return 'You lost the games: ${playerWins} to ${computerWins}`';
-    } else {
-        return 'the games ended in a tie'
-    }
+//     if (playerWins > computerWins) {
+//         return `You won the games: ${playerWins} to ${computerWins}`;
+//     } else if (computerWins > playerWins) {
+//         return 'You lost the games: ${playerWins} to ${computerWins}`';
+//     } else {
+//         return 'the games ended in a tie'
+//     }
 
-};
+// };
 
 function getPlayerChoice() {
     let validChoice = false;
@@ -123,3 +115,84 @@ function getPlayerChoice() {
     
     return cleanedChoice;
 };
+
+const buttons = [...document.querySelectorAll('button')];
+
+buttons.forEach(btn => btn.addEventListener('click', handleSelection));
+// Button handler needs to do the following:
+// 1: Play the round
+// 2: Display the results
+
+function getRoundResult(playerSelection, computerSelection) {
+    let winScenario = decideWinScenario(playerSelection, computerSelection);
+    return winScenario;
+
+
+}
+
+function handleSelection(e) {
+    const scoreDivs = [...document.querySelectorAll('.score')]
+    scoreDivs.forEach(div => {
+        if (checkWin(parseInt(div.textContent))) {
+            clearScores();
+        }
+    })
+
+    const computerSelection = getComputerChoice();
+    const playerSelection = cleanChoice(e.target.textContent);
+    const roundResult = decideWinScenario(playerSelection, computerSelection)
+    const outputString = makeOutputString(roundResult, playerSelection, computerSelection);
+    displayRoundResults(outputString);
+    updateScores(roundResult)
+
+
+}
+
+
+function displayRoundResults(outputString) {
+    const resultsDiv = document.querySelector('.results-text')
+    resultsDiv.textContent = outputString;
+}
+
+function updateScores(winScenario) {
+    const playerScore = document.querySelector('.player-score');
+    const computerScore = document.querySelector('.computer-score');
+    let scoreToUpdate;
+    let currentScore;
+
+
+    if ( winScenario === 0) {
+        scoreToUpdate = computerScore;
+    }
+    if ( winScenario === 1) {
+        scoreToUpdate = playerScore;
+    }
+
+    if (winScenario !== 2) {
+        currentScore = parseInt(scoreToUpdate.textContent);
+        currentScore++;
+        scoreToUpdate.textContent = currentScore;
+    
+        if (checkWin(currentScore)) {
+            const gameWinLose = document.querySelector('.game-win-lose-text');
+            gameWinLose.textContent = `You ${winScenario === 1 ? 'Win' : 'Lose'}!`;
+        }
+    }
+    
+}
+
+function checkWin(score, gamesToWin=5) {
+
+    if (score === gamesToWin) {
+        return true
+    }
+    return false;
+}
+
+function clearScores() {
+    const scoreDivs = [...document.querySelectorAll('.score')]
+    const testDiv = document.querySelector('.game-win-lose-text');
+    scoreDivs.forEach(div => div.textContent = '0');
+    testDiv.textContent = '';
+
+}
