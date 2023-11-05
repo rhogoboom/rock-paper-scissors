@@ -131,6 +131,9 @@ function getRoundResult(playerSelection, computerSelection) {
 }
 
 function handleSelection(e) {
+    const resultsDiv = document.querySelector('.results');
+    resultsDiv.style.display = 'block';
+
     const scoreDivs = [...document.querySelectorAll('.score')]
     scoreDivs.forEach(div => {
         if (checkWin(parseInt(div.textContent))) {
